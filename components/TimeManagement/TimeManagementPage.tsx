@@ -2,9 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../layouts/Sidebar';
-import TimeTracker from './TimeTracker';
-import TimeHistory from './TimeHistory';
-import TimeSummary from './TimeSummary';
+import dynamic from 'next/dynamic';
+
+// Dynamically import components with no SSR to avoid hydration issues
+const TimeTracker = dynamic(() => import('./TimeTracker'), { ssr: false });
+const TimeHistory = dynamic(() => import('./TimeHistory'), { ssr: false });
+const TimeSummary = dynamic(() => import('./TimeSummary'), { ssr: false });
 
 export type ActivityCategory = 'exercise' | 'work' | 'study' | 'sleep' | 'leisure' | 'selfcare';
 
@@ -59,6 +62,8 @@ const TimeManagementPage: React.FC = () => {
 
   // Load time records from localStorage on component mount
   useEffect(() => {
+    if (!isMounted) return;
+    
     const savedRecords = localStorage.getItem('timeRecords');
     if (savedRecords) {
       try {
@@ -74,12 +79,13 @@ const TimeManagementPage: React.FC = () => {
         console.error('Failed to parse time records', error);
       }
     }
-  }, []);
+  }, [isMounted]);
 
   // Save records to localStorage whenever they change
   useEffect(() => {
+    if (!isMounted) return;
     localStorage.setItem('timeRecords', JSON.stringify(timeRecords));
-  }, [timeRecords]);
+  }, [timeRecords, isMounted]);
 
   // Handle starting a new activity
   const startActivity = (category: ActivityCategory, notes: string = '') => {

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 const NewTransaction: React.FC = () => {
   const [amount, setAmount] = useState('');
@@ -46,9 +47,11 @@ const NewTransaction: React.FC = () => {
         {users.map((user) => (
           <div key={user.id} className="flex flex-col items-center">
             <div className="w-10 h-10 rounded-full overflow-hidden mb-1">
-              <img 
+              <Image 
                 src={user.img} 
                 alt={user.name}
+                width={40}
+                height={40}
                 className="w-full h-full object-cover"
               />
             </div>
